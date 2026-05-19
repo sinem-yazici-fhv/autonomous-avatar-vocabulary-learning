@@ -37,19 +37,16 @@ public class SpeechBubble : MonoBehaviour
         RectTransform backgroundRect = speechText?.transform.parent as RectTransform;
         if (backgroundRect != null)
         {
-            // Die Sprechblase bisschen nach unten schieben, damit sie nicht zu weit oben schwebt
             backgroundRect.anchoredPosition += new Vector2(0f, -30f);
 
-            // Hintergrund stylen
             Image backgroundImage = backgroundRect.GetComponent<Image>();
             if (backgroundImage != null)
             {
                 backgroundImage.sprite = CreateSpeechBubbleSprite();
                 backgroundImage.type = Image.Type.Sliced;
-                backgroundImage.color = Color.white; // We draw the color inside our texture
+                backgroundImage.color = Color.white;
             }
 
-            // Sicherstellen, dass keine alten Effekte mehr stören
             Shadow shadow = backgroundRect.gameObject.GetComponent<Shadow>();
             if (shadow != null) Destroy(shadow);
 
@@ -57,7 +54,6 @@ public class SpeechBubble : MonoBehaviour
             if (outline != null) Destroy(outline);
         }
 
-        // Text stylen
         if (speechText != null)
         {
             speechText.color = new Color(0.1f, 0.1f, 0.2f, 1f);
@@ -94,25 +90,21 @@ public class SpeechBubble : MonoBehaviour
             {
                 float px = x; float py = y;
 
-                // Signed Distance Field (SDF) für die rechteckige Box
                 float dx = Mathf.Abs(px - cx) - hx + r;
                 float dy = Mathf.Abs(py - cy) - hy + r;
                 float distBoxOuter = Mathf.Sqrt(Mathf.Max(dx, 0f)*Mathf.Max(dx, 0f) + Mathf.Max(dy, 0f)*Mathf.Max(dy, 0f)) + Mathf.Min(Mathf.Max(dx, dy), 0f);
                 float sdfBox = r - distBoxOuter;
 
-                // Signed Distance Field (SDF) für den spitz zulaufenden Schweif
                 float sdf1 = (px - 60f) * nx1 + py * ny1;
                 float sdf2 = (px - 60f) * nx2 + py * ny2;
                 float sdfTail = Mathf.Min(sdf1, sdf2);
-                sdfTail = Mathf.Min(sdfTail, py + 0.5f); // Abrunden an der Unterkante
-                if (py > 20f) sdfTail = -1000f; // Oberhalb der Box ignorieren
+                sdfTail = Mathf.Min(sdfTail, py + 0.5f);
+                if (py > 20f) sdfTail = -1000f;
 
-                // Kombinieren der beiden Formen (Union)
                 float sdf = Mathf.Max(sdfBox, sdfTail);
 
-                // Anti-Aliasing & Umriss berechnen
                 float alpha = Mathf.Clamp01(sdf + 0.5f);
-                float blend = Mathf.Clamp01(sdf - 2f); // Der grüne Rand ist ca. 3 Pixel dick
+                float blend = Mathf.Clamp01(sdf - 2f);
 
                 byte rC = (byte)Mathf.Lerp(greenOutline.r, 255f, blend);
                 byte gC = (byte)Mathf.Lerp(greenOutline.g, 255f, blend);
@@ -174,17 +166,15 @@ public class SpeechBubble : MonoBehaviour
         Vector2 preferred = speechText.GetPreferredValues(message, maxWidth - 42f, 0f);
         float width = Mathf.Clamp(preferred.x + 42f, minWidth, maxWidth);
         
-        // +18 für den Bereich des Schweifs, den wir weiter unten durch Margin ignorieren
         float height = Mathf.Max(minHeight, preferred.y + 34f);
 
         backgroundRect.sizeDelta = new Vector2(width, height);
         if (bubbleRect != null)
             bubbleRect.sizeDelta = new Vector2(width, height);
 
-        // Wir schieben den Text nach oben, damit er nicht im neuen Schweif landet
         if (speechText != null)
         {
-            speechText.margin = new Vector4(0f, 0f, 0f, 18f); // (left, top, right, bottom)
+            speechText.margin = new Vector4(0f, 0f, 0f, 18f);
         }
     }
 

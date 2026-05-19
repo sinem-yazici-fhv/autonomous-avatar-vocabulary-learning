@@ -16,7 +16,7 @@ public class Task2Manager : MonoBehaviour
 {
     [Header("UI & References")]
     public TMP_Text blackboardText;
-    public Button[] answerButtons; // 3 Buttons
+    public Button[] answerButtons;
     public NPCInteraction npcInteraction;
     public Animator npcAnimator;
     
@@ -65,7 +65,6 @@ public class Task2Manager : MonoBehaviour
         HideButtons();
         if (blackboardText != null) blackboardText.text = "";
         
-        // Versuche Spieler Transform zu finden (für Drehung zurück)
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
         
@@ -94,7 +93,7 @@ public class Task2Manager : MonoBehaviour
             else if (taskStates[i] == TaskState.Wrong)
                 barStr += "<color=#F44336>█</color>"; 
             else
-                barStr += "<color=#B0B0B0>█</color>"; // grey
+                barStr += "<color=#B0B0B0>█</color>";
         }
         
         int current = Mathf.Min(currentIndex + 1, sentences.Length);
@@ -117,7 +116,6 @@ public class Task2Manager : MonoBehaviour
         wrongThisRound = false;
         UpdateProgressBar();
 
-        // Kurze Pause, damit die "Great!" / "Correct!" Nachricht gelesen werden kann
         if (currentIndex == 0) yield return new WaitForSeconds(firstSentenceIntroDelay);
         else yield return new WaitForSeconds(nextSentenceDelay);
 
@@ -129,10 +127,8 @@ public class Task2Manager : MonoBehaviour
 
         var task = sentences[currentIndex];
         
-        // Robert dreht sich zur Tafel
         if (npcTransform != null && blackboardTransform != null)
         {
-            // y-Achse bleibt gleich (damit er nicht nach oben/unten guckt)
             Vector3 targetPos = new Vector3(blackboardTransform.position.x, npcTransform.position.y, blackboardTransform.position.z);
             npcTransform.LookAt(targetPos);
         }
@@ -140,15 +136,13 @@ public class Task2Manager : MonoBehaviour
         if (blackboardText != null)
         {
             blackboardText.text = blackboardHeader;
-            // Schreib-Animation
             foreach (char c in task.sentencePattern)
             {
                 blackboardText.text += c;
-                yield return new WaitForSeconds(blackboardTypewriterSpeed); // Tippgeschwindigkeit
+                yield return new WaitForSeconds(blackboardTypewriterSpeed);
             }
         }
 
-        // Robert dreht sich zurück zum Spieler
         if (npcTransform != null && playerTransform != null)
         {
             Vector3 targetPos = new Vector3(playerTransform.position.x, npcTransform.position.y, playerTransform.position.z);
@@ -165,7 +159,6 @@ public class Task2Manager : MonoBehaviour
         List<string> options = new List<string>(task.wrongAnswers);
         options.Add(task.correctAnswer);
         
-        // Mische die Antworten
         for (int i = 0; i < options.Count; i++) {
             string temp = options[i];
             int randomIndex = Random.Range(i, options.Count);
@@ -195,7 +188,6 @@ public class Task2Manager : MonoBehaviour
     {
         if (answer == correctAnswer)
         {
-            // Richtig
             if (!wrongThisRound)
             {
                 correctFirstTry++;
@@ -216,7 +208,6 @@ public class Task2Manager : MonoBehaviour
             npcAnimator.SetTrigger("doNod");
         }
    
-            // Satz komplettieren
             string completedSentence = sentencePattern.Replace("_____", answer);
             string randomPraise = praiseMessages[Random.Range(0, praiseMessages.Length)];
 
@@ -230,7 +221,6 @@ public class Task2Manager : MonoBehaviour
         }
         else
         {
-            // Falsch
             if (!wrongThisRound)
             {
                 taskStates[currentIndex] = TaskState.Wrong;
@@ -269,7 +259,6 @@ public class Task2Manager : MonoBehaviour
         int total = sentences.Length;
         int score = Mathf.RoundToInt((correctFirstTry / (float)total) * 100);
 
-        // Bestes Ergebnis für Task 2 speichern (Option A)
         int bestCorrect2 = PlayerPrefs.GetInt("Task2BestCorrect", 0);
         if (correctFirstTry > bestCorrect2)
         {
@@ -295,7 +284,6 @@ public class Task2Manager : MonoBehaviour
         if (blackboardText != null)
             blackboardText.text = "Well done!";
         
-        // Zurück zum Spieler drehen
         if (npcTransform != null && playerTransform != null)
         {
             Vector3 targetPos = new Vector3(playerTransform.position.x, npcTransform.position.y, playerTransform.position.z);

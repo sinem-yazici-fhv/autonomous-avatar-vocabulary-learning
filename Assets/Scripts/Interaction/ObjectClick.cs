@@ -8,7 +8,6 @@ public class ObjectClick : MonoBehaviour
     public string correctTag = "Chair";
     private bool taskActive = false;
 
-    // NPCInteraction registriert sich hier
     public Action onCorrect;
     public Action onWrong;
 
@@ -17,7 +16,6 @@ public class ObjectClick : MonoBehaviour
         if (!taskActive) return;
         if (Input.GetMouseButtonDown(0))
         {
-            // NEU: UI Klick ignorieren
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
                 
@@ -54,7 +52,7 @@ public class ObjectClick : MonoBehaviour
     
     public void StartTask(string tag)
     {
-        correctTag = tag; // welches Objekt gesucht wird
+        correctTag = tag;
         taskActive = true;
     }
 

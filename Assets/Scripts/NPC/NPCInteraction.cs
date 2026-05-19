@@ -116,11 +116,11 @@ public class NPCInteraction : MonoBehaviour
         for (int i = 0; i < tasks.Length; i++)
         {
             if (taskStates[i] == TaskState.Correct)
-                barStr += "<color=#4CAF50>█</color>"; // green
+                barStr += "<color=#4CAF50>█</color>";
             else if (taskStates[i] == TaskState.Wrong)
-                barStr += "<color=#F44336>█</color>"; // red
+                barStr += "<color=#F44336>█</color>";
             else
-                barStr += "<color=#B0B0B0>█</color>"; // grey
+                barStr += "<color=#B0B0B0>█</color>";
         }
         
         int current = Mathf.Min(currentTaskIndex + 1, tasks.Length);
@@ -250,7 +250,6 @@ public class NPCInteraction : MonoBehaviour
         int total = tasks.Length;
         int score = Mathf.RoundToInt((firstTryCorrect / (float)total) * 100);
 
-        // Bestes Ergebnis für Task 1 speichern (Option A)
         int bestCorrect = PlayerPrefs.GetInt("Task1BestCorrect", 0);
         if (firstTryCorrect > bestCorrect)
         {

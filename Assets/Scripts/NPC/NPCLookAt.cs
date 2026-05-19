@@ -15,7 +15,6 @@ public class NPCLookAt : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             
-            // Nur Y-Rotation ändern, X und Z behalten
             Vector3 currentEuler = transform.rotation.eulerAngles;
             float targetY = targetRotation.eulerAngles.y;
             

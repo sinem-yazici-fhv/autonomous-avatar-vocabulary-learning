@@ -13,9 +13,8 @@ public class BillboardScript : MonoBehaviour
     {
         if (mainCamera == null) return;
 
-        // Nur Y-Achse zur Kamera drehen — bleibt gerade aufrecht!
         Vector3 direction = mainCamera.transform.position - transform.position;
-        direction.y = 0; // Y ignorieren → kein Kippen!
+        direction.y = 0;
         
         if (direction != Vector3.zero)
         {
